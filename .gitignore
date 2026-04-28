@@ -2,6 +2,8 @@
 .pytest_cache/
 __pycache__/
 *.pyc
-reports/
+reports/*
+!reports/.gitkeep
+!reports/*.md
+!reports/*.csv
 .env
-
