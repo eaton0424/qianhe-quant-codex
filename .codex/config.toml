@@ -1,0 +1,24 @@
+[project]
+name = "qianhe_quant_codex_tool_v1"
+description = "Research-only quant research, backtest, news factor, paper trade, and risk logging toolkit."
+
+[behavior]
+editing_style = "cautious"
+summary_style = "clear"
+change_strategy = "incremental"
+
+[preferences]
+prefer_typed_code = true
+prefer_small_verifiable_changes = true
+prefer_read_before_edit = true
+prefer_explicit_summaries = true
+
+[content_rules]
+forbid_live_trading = true
+forbid_broker_api_integration = true
+forbid_secret_storage = true
+
+[output]
+always_summarize_changed_files = true
+highlight_risks_and_assumptions = true
+
