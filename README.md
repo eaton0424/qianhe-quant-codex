@@ -1,4 +1,4 @@
-# 千合之本 AI 量化研究与模拟交易工具 V1
+# 千合之本 AI 量化研究与模拟交易工具 V1.1
 
 定位：把“主观投研判断”转为“可验证、可回测、可风控、可留痕”的量化研究工具。
 
@@ -11,7 +11,7 @@
 3. 回测层：计算资金曲线、收益、回撤、胜率、交易次数。
 4. 风控层：检查单票权重、最大回撤、换手、异常信号。
 5. 模拟交易层：paper account，不连接真实券商。
-6. 研究信号层：支持本地新闻事件因子与单票研究信号。
+6. 研究信号层：支持本地新闻事件因子、通用单票研究信号和预置案例模块。
 7. 报告层：输出 Markdown 策略复盘报告、风控报告、日报和模拟交易日志。
 8. Codex 层：通过 AGENTS.md、.codex 和 skills 固化工作流。
 
@@ -27,18 +27,38 @@ python -m qianhe_quant.cli daily-report --data qianhe_quant/data/sample_ohlcv.cs
 pytest
 ```
 
-## 单票研究信号
+## 通用个股研究信号模块
 
-当前仓库已包含“新亚电缆研究信号模块 V1”：
+当前仓库已包含通用单票研究框架：
 
-- `qianhe_quant/research/single_stock_research.py`
-- `qianhe_quant/research/xinya_cable_signal.py`
-- `qianhe_quant/templates/single_stock_signal_template.md`
+- `qianhe_quant/research/stock_profile.py`
+- `qianhe_quant/research/event_factor.py`
+- `qianhe_quant/research/research_signal_engine.py`
+- `qianhe_quant/templates/stock_research_input_template.md`
+- `qianhe_quant/templates/stock_signal_report_template.md`
+
+输入字段支持：
+
+- `stock_code`
+- `stock_name`
+- `theme_tags`
+- `facts`
+- `opinions`
+- `assumptions`
+- `risks`
+- `verification_tasks`
+
+输出信号等级：
+
+- `observe`
+- `watch`
+- `strong_watch`
+- `avoid`
 
 示例使用方式：
 
 ```bash
-python -c "from pathlib import Path; from qianhe_quant.research import build_xinya_cable_signal, generate_xinya_cable_signal_report; signal = build_xinya_cable_signal('qianhe_quant/data/sample_ohlcv.csv'); report = generate_xinya_cable_signal_report(signal); Path('reports/xinya_cable_signal_report.md').write_text(report, encoding='utf-8')"
+python -c "from pathlib import Path; from qianhe_quant.research import StockProfile, build_stock_research_signal, generate_stock_signal_report; profile = StockProfile(stock_code='000001', stock_name='样例股份', theme_tags=['电网设备', '订单修复'], facts=['公司披露了订单增长信息。'], opinions=['市场把该标的视为电网建设链条中的研究对象。'], assumptions=['若订单兑现且量能确认，研究关注级别可以提升。'], risks=['估值波动较大，短期需要等待更多确认。'], verification_tasks=['核验订单披露是否来自正式公告。']); signal = build_stock_research_signal(profile, 'qianhe_quant/data/sample_ohlcv.csv'); report = generate_stock_signal_report(profile, signal); Path('reports/sample_stock_signal_report.md').write_text(report, encoding='utf-8')"
 pytest
 ```
 
@@ -46,12 +66,20 @@ pytest
 
 - 只生成“研究信号”
 - 不生成买入、卖出、持仓、仓位建议
+- 不生成收益承诺
 - 所有结论都区分事实、观点、推断、待核验
+
+## 预置案例：新亚电缆
+
+预置的“新亚电缆研究信号模块”现在是通用引擎上的一个案例封装：
+
+- `qianhe_quant/research/xinya_cable_signal.py`
+- `reports/xinya_cable_signal_report.md`
 
 ## 推荐工作流
 
 ```text
-主观观点 -> 量化假设 -> 指标定义 -> 策略规则 -> 历史回测 -> 风控检查 -> 模拟交易 -> 复盘报告 -> 待核验清单
+任意股票纪要 -> 标的标签 -> 事实/观点/推断/待核验拆分 -> 事件因子 -> 趋势因子 -> 量能因子 -> 风险因子 -> 综合研究信号 -> Markdown 报告 -> 后续复盘留痕
 ```
 
 ## 当前边界

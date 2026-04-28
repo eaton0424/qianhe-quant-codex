@@ -33,9 +33,9 @@ def test_xinya_cable_report_contains_research_boundary():
     report = generate_xinya_cable_signal_report(signal)
     assert "research signal only" in report
     assert "buy, sell, hold" in report
-    assert "事实" not in report or True
+    assert "Input Facts" in report
 
 
 def test_xinya_template_file_exists():
-    template_path = Path("qianhe_quant/templates/single_stock_signal_template.md")
+    template_path = Path("qianhe_quant/templates/stock_signal_report_template.md")
     assert template_path.exists()
