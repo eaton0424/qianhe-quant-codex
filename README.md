@@ -27,6 +27,27 @@ python -m qianhe_quant.cli daily-report --data qianhe_quant/data/sample_ohlcv.cs
 pytest
 ```
 
+## 单票研究信号
+
+当前仓库已包含“新亚电缆研究信号模块 V1”：
+
+- `qianhe_quant/research/single_stock_research.py`
+- `qianhe_quant/research/xinya_cable_signal.py`
+- `qianhe_quant/templates/single_stock_signal_template.md`
+
+示例使用方式：
+
+```bash
+python -c "from pathlib import Path; from qianhe_quant.research import build_xinya_cable_signal, generate_xinya_cable_signal_report; signal = build_xinya_cable_signal('qianhe_quant/data/sample_ohlcv.csv'); report = generate_xinya_cable_signal_report(signal); Path('reports/xinya_cable_signal_report.md').write_text(report, encoding='utf-8')"
+pytest
+```
+
+输出边界：
+
+- 只生成“研究信号”
+- 不生成买入、卖出、持仓、仓位建议
+- 所有结论都区分事实、观点、推断、待核验
+
 ## 推荐工作流
 
 ```text
