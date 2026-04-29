@@ -1,0 +1,28 @@
+universe:
+  min_listed_days: 120
+  suspension_lookback_days: 5
+  min_avg_amount_20d: 50000000
+
+trend:
+  ma_short: 5
+  ma_medium: 20
+  ma_long: 60
+  breakout_window: 20
+
+valuation:
+  pb_low_rank_quantile: 0.30
+  pe_min: 0
+  pe_max: 20
+
+liquidity:
+  avg_amount_threshold: 50000000
+  avg_turnover_window: 20
+
+strategy_lab:
+  top_n: 5
+  rebalance_frequency: weekly
+  allow_estimated_amount: true
+
+execution:
+  commission_rate: 0.0003
+  slippage_rate: 0.0002

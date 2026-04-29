@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+from qianhe_quant.analysis.strategy_tournament import run_strategy_tournament
 from qianhe_quant.data_loader import load_ohlcv_csv
 from qianhe_quant.strategies import STRATEGIES
 from qianhe_quant.backtest import run_vector_backtest
@@ -8,7 +9,9 @@ from qianhe_quant.risk import check_backtest_risk
 from qianhe_quant.reporter import (
     build_markdown_report,
     build_risk_check_report,
+    build_strategy_tournament_report,
     build_strategy_review_report,
+    build_weekly_strategy_lab_report,
     save_dataframe,
     save_report,
 )
@@ -42,7 +45,22 @@ def main() -> None:
     dr.add_argument("--strategy", choices=sorted(STRATEGIES), default="single_stock_research")
     dr.add_argument("--out", required=True)
 
+    sl = sub.add_parser("strategy-lab", help="Generate strategy tournament and weekly lab reports")
+    sl.add_argument("--data", default="qianhe_quant/data/sample_ohlcv.csv")
+    sl.add_argument("--out", required=True)
+
     args = parser.parse_args()
+    if args.cmd == "strategy-lab":
+        tournament = run_strategy_tournament(args.data)
+        tournament_out = save_report(args.out, build_strategy_tournament_report(tournament))
+        weekly_out = save_report(
+            Path(args.out).parent / "weekly_strategy_lab_report.md",
+            build_weekly_strategy_lab_report(tournament),
+        )
+        print(f"Strategy tournament report generated: {tournament_out}")
+        print(f"Weekly strategy lab report generated: {weekly_out}")
+        return
+
     result, findings = _run_backtest(args.data, args.strategy)
     if args.cmd == "backtest":
         print(format_metrics(result.metrics))
