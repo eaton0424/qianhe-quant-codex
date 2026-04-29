@@ -20,6 +20,7 @@ def _build_xinya_profile(stock_code: str, stock_name: str) -> StockProfile:
     return StockProfile(
         stock_code=stock_code,
         stock_name=stock_name,
+        industry="Power Equipment",
         theme_tags=THEME_TAGS,
         facts=[
             "公司当前被纳入电网设备与特种线缆研究范围。",

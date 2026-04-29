@@ -3,23 +3,24 @@
 ## Basic Info
 - stock_code:
 - stock_name:
+- industry:
 - theme_tags:
 
 ## Facts
-- Example: confirmed filings, contracts, products, customer disclosures, capacity updates
+- Confirmed filings, contracts, products, customer disclosures, capacity updates
 
 ## Opinions
-- Example: current market narrative, relative-strength interpretation, sector context
+- Current market narrative, sector interpretation, relative-strength view
 
 ## Assumptions
-- Example: what must continue to be true for the research case to strengthen
+- What must continue to be true for the research case to strengthen
 
 ## Risks
-- Example: valuation pressure, weak confirmation, policy uncertainty, liquidity concerns
+- Valuation pressure, weak confirmation, policy uncertainty, liquidity concerns
 
 ## Verification Tasks
-- Example: items that still require manual cross-checking before any external summary
+- Items that still require manual cross-checking before any external summary
 
 ## Boundary
 - This template is for research signals only.
-- Do not convert it into buy, sell, hold, target-price, or position-sizing instructions.
+- Do not convert it into buy, sell, hold, target-price, target-return, or position-sizing instructions.

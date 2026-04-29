@@ -83,9 +83,9 @@ def _score_risk(
         risk_score += 15.0
         risk_notes.append("Recent event balance tilts negative and needs closer manual review.")
 
-    if len(event_assessment.caution_markers) > len(event_assessment.positive_markers):
+    if event_assessment.risk_event >= 50:
         risk_score += 10.0
-        risk_notes.append("Cautionary narrative markers currently outweigh positive event markers.")
+        risk_notes.append("Event-factor risk markers remain elevated and require manual verification.")
 
     return clamp_score(risk_score), risk_notes
 
@@ -105,19 +105,20 @@ def build_stock_research_signal(
     event_assessment = assess_event_factor(profile, news_df, latest_date)
     risk_score, risk_notes = _score_risk(profile, df, event_assessment)
 
-    final_research_signal = clamp_score(
+    final_score = clamp_score(
         trend_score * 0.25
         + breakout_score * 0.20
         + volume_score * 0.15
         + event_assessment.event_score * 0.25
         + (100.0 - risk_score) * 0.15
     )
-    signal_level = signal_level_from_score(final_research_signal, risk_score)
+    signal_level = signal_level_from_score(final_score, risk_score)
 
     latest = df.iloc[-1]
     evidence_summary = SignalEvidence(
         facts=profile.facts
         + [
+            f"Industry under review: {profile.industry}.",
             f"Latest sample close is {float(latest['close']):.2f}.",
             f"Trend score is {trend_score:.2f}, breakout score is {breakout_score:.2f}, volume score is {volume_score:.2f}.",
             f"Event score is {event_assessment.event_score:.2f} with {event_assessment.news_event_count} local news rows in the recent window.",
@@ -148,7 +149,7 @@ def build_stock_research_signal(
         volume_score=volume_score,
         event_score=event_assessment.event_score,
         risk_score=risk_score,
-        final_research_signal=final_research_signal,
+        final_research_signal=final_score,
         signal_level=signal_level,
         evidence_summary=evidence_summary,
         risk_notes=risk_notes,
@@ -165,13 +166,14 @@ def generate_stock_signal_report(
     replacements = {
         "{{stock_code}}": signal.stock_code,
         "{{stock_name}}": signal.stock_name,
+        "{{industry}}": profile.industry,
         "{{theme_tags}}": ", ".join(signal.theme_tags),
         "{{trend_score}}": f"{signal.trend_score:.2f}",
         "{{breakout_score}}": f"{signal.breakout_score:.2f}",
         "{{volume_score}}": f"{signal.volume_score:.2f}",
         "{{event_score}}": f"{signal.event_score:.2f}",
         "{{risk_score}}": f"{signal.risk_score:.2f}",
-        "{{final_research_signal}}": f"{signal.final_research_signal:.2f}",
+        "{{final_score}}": f"{signal.final_score:.2f}",
         "{{signal_level}}": signal.signal_level.value,
         "{{facts}}": "\n".join(f"- {item}" for item in profile.facts),
         "{{opinions}}": "\n".join(f"- {item}" for item in profile.opinions),

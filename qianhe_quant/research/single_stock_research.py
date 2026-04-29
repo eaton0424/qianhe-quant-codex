@@ -33,6 +33,10 @@ class ResearchSignal:
     risk_notes: list[str]
     verification_tasks: list[str]
 
+    @property
+    def final_score(self) -> float:
+        return self.final_research_signal
+
     def as_dict(self) -> dict:
         return {
             "stock_code": self.stock_code,
@@ -43,6 +47,7 @@ class ResearchSignal:
             "volume_score": self.volume_score,
             "event_score": self.event_score,
             "risk_score": self.risk_score,
+            "final_score": self.final_score,
             "final_research_signal": self.final_research_signal,
             "signal_level": self.signal_level.value,
             "evidence_summary": {

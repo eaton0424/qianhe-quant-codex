@@ -3,6 +3,7 @@
 ## Basic Info
 - stock_code: {{stock_code}}
 - stock_name: {{stock_name}}
+- industry: {{industry}}
 - theme_tags: {{theme_tags}}
 
 ## Quantified Research Signal
@@ -11,7 +12,7 @@
 - volume_score: {{volume_score}}
 - event_score: {{event_score}}
 - risk_score: {{risk_score}}
-- final_research_signal: {{final_research_signal}}
+- final_score: {{final_score}}
 - signal_level: {{signal_level}}
 
 ## Input Facts

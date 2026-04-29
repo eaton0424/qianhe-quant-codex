@@ -6,12 +6,12 @@
 
 ## 核心功能
 
-1. 数据层：读取 CSV 行情数据，预留行情/财务/新闻接口。
+1. 数据层：读取 CSV 行情数据，预留行情、财务、新闻接口。
 2. 策略层：把主观逻辑转成可执行策略信号。
 3. 回测层：计算资金曲线、收益、回撤、胜率、交易次数。
 4. 风控层：检查单票权重、最大回撤、换手、异常信号。
 5. 模拟交易层：paper account，不连接真实券商。
-6. 研究信号层：支持本地新闻事件因子、通用单票研究信号和预置案例模块。
+6. 研究信号层：支持本地新闻事件因子、通用个股研究信号引擎和预置案例模块。
 7. 报告层：输出 Markdown 策略复盘报告、风控报告、日报和模拟交易日志。
 8. Codex 层：通过 AGENTS.md、.codex 和 skills 固化工作流。
 
@@ -27,7 +27,7 @@ python -m qianhe_quant.cli daily-report --data qianhe_quant/data/sample_ohlcv.cs
 pytest
 ```
 
-## 通用个股研究信号模块
+## 通用个股研究信号引擎
 
 当前仓库已包含通用单票研究框架：
 
@@ -37,10 +37,11 @@ pytest
 - `qianhe_quant/templates/stock_research_input_template.md`
 - `qianhe_quant/templates/stock_signal_report_template.md`
 
-输入字段支持：
+### 输入字段
 
 - `stock_code`
 - `stock_name`
+- `industry`
 - `theme_tags`
 - `facts`
 - `opinions`
@@ -48,21 +49,41 @@ pytest
 - `risks`
 - `verification_tasks`
 
-输出信号等级：
+### 事件因子字段
+
+- `announcement_event`
+- `news_event`
+- `order_event`
+- `policy_event`
+- `product_event`
+- `management_event`
+- `risk_event`
+
+### 输出信号字段
+
+- `trend_score`
+- `breakout_score`
+- `volume_score`
+- `event_score`
+- `risk_score`
+- `final_score`
+- `signal_level`
+
+### 输出等级
 
 - `observe`
 - `watch`
 - `strong_watch`
 - `avoid`
 
-示例使用方式：
+### 示例使用方式
 
 ```bash
-python -c "from pathlib import Path; from qianhe_quant.research import StockProfile, build_stock_research_signal, generate_stock_signal_report; profile = StockProfile(stock_code='000001', stock_name='样例股份', theme_tags=['电网设备', '订单修复'], facts=['公司披露了订单增长信息。'], opinions=['市场把该标的视为电网建设链条中的研究对象。'], assumptions=['若订单兑现且量能确认，研究关注级别可以提升。'], risks=['估值波动较大，短期需要等待更多确认。'], verification_tasks=['核验订单披露是否来自正式公告。']); signal = build_stock_research_signal(profile, 'qianhe_quant/data/sample_ohlcv.csv'); report = generate_stock_signal_report(profile, signal); Path('reports/sample_stock_signal_report.md').write_text(report, encoding='utf-8')"
+python -c "from pathlib import Path; from qianhe_quant.research import StockProfile, build_stock_research_signal, generate_stock_signal_report; profile = StockProfile(stock_code='000001', stock_name='Sample Grid Co', industry='Power Equipment', theme_tags=['grid equipment', 'order recovery'], facts=['The company disclosed order growth and capacity expansion updates.'], opinions=['The market currently groups this name into a grid-investment research basket.'], assumptions=['If orders convert into revenue and volume confirms, monitoring intensity can increase.'], risks=['Valuation remains sensitive to weak confirmation and short-term volatility.'], verification_tasks=['Verify whether the order language comes from a formal filing.']); signal = build_stock_research_signal(profile, 'qianhe_quant/data/sample_ohlcv.csv'); report = generate_stock_signal_report(profile, signal); Path('reports/sample_stock_signal_report.md').write_text(report, encoding='utf-8')"
 pytest
 ```
 
-输出边界：
+### 输出边界
 
 - 只生成“研究信号”
 - 不生成买入、卖出、持仓、仓位建议
