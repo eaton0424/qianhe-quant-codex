@@ -7,3 +7,5 @@ reports/*
 !reports/*.md
 !reports/*.csv
 .env
+data/local_db/*.duckdb
+data/local_db/*.wal

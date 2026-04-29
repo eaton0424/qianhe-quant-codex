@@ -1,0 +1,12 @@
+db_path: data/local_db/qianhe_quant.duckdb
+default_source: local_csv
+allow_estimated_amount: true
+overwrite_existing: true
+quality_checks:
+  required_columns:
+    - date
+    - open
+    - high
+    - low
+    - close
+    - volume

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from qianhe_quant.research.xinya_cable_signal import (
     build_xinya_cable_signal,
     generate_xinya_cable_signal_report,
@@ -24,8 +25,8 @@ def test_xinya_cable_signal_fields_are_present():
         "verification_tasks",
     }
     assert expected_keys.issubset(data.keys())
-    assert signal.stock_name == "新亚电缆"
-    assert "南方电网订单" in signal.theme_tags
+    assert signal.stock_name == "\u65b0\u4e9a\u7535\u7f06"
+    assert "\u5357\u65b9\u7535\u7f51\u8ba2\u5355" in signal.theme_tags
 
 
 def test_xinya_cable_report_contains_research_boundary():
