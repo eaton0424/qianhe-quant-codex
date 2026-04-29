@@ -1,111 +1,106 @@
-# 千合之本 AI 量化研究与模拟交易工具 V1.1
+# 千合之本 AI 量化研究与模拟交易工具
 
-定位：把“主观投研判断”转为“可验证、可回测、可风控、可留痕”的量化研究工具。
+定位：把主观投研判断转成可验证、可回测、可留痕的本地量化研究工具。  
+默认禁止实盘交易。本仓库只用于研究、回测、模拟交易、风控留痕与报告生成。
 
-> 默认禁止实盘下单。本工具只用于研究、回测、模拟交易和风控留痕。任何真实交易必须经过人工确认、合规审查与券商/交易所规则核验。
+## 当前版本
 
-## 核心功能
-
-1. 数据层：读取 CSV 行情数据，预留行情、财务、新闻接口。
-2. 策略层：把主观逻辑转成可执行策略信号。
-3. 回测层：计算资金曲线、收益、回撤、胜率、交易次数。
-4. 风控层：检查单票权重、最大回撤、换手、异常信号。
-5. 模拟交易层：paper account，不连接真实券商。
-6. 研究信号层：支持本地新闻事件因子、通用个股研究信号引擎和预置案例模块。
-7. 报告层：输出 Markdown 策略复盘报告、风控报告、日报和模拟交易日志。
-8. Codex 层：通过 AGENTS.md、.codex 和 skills 固化工作流。
+- `V1.0` 基础回测、模拟交易、报告
+- `V1.1` 通用个股研究信号引擎
+- `V1.2` 策略实验室、多策略排行榜、风险报告
+- `V1.3` 本地量化数据库与数据接入层
 
 ## 快速开始
 
-```bash
+```powershell
 python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+基础回测：
+
+```powershell
 python -m qianhe_quant.cli backtest --data qianhe_quant/data/sample_ohlcv.csv --strategy ma_cross
-python -m qianhe_quant.cli report --data qianhe_quant/data/sample_ohlcv.csv --strategy ma_cross --out reports/demo_report.md
-python -m qianhe_quant.cli daily-report --data qianhe_quant/data/sample_ohlcv.csv --strategy single_stock_research --out reports/daily_quant_report.md
-pytest
 ```
 
-## 通用个股研究信号引擎
+策略实验室：
 
-当前仓库已包含通用单票研究框架：
-
-- `qianhe_quant/research/stock_profile.py`
-- `qianhe_quant/research/event_factor.py`
-- `qianhe_quant/research/research_signal_engine.py`
-- `qianhe_quant/templates/stock_research_input_template.md`
-- `qianhe_quant/templates/stock_signal_report_template.md`
-
-### 输入字段
-
-- `stock_code`
-- `stock_name`
-- `industry`
-- `theme_tags`
-- `facts`
-- `opinions`
-- `assumptions`
-- `risks`
-- `verification_tasks`
-
-### 事件因子字段
-
-- `announcement_event`
-- `news_event`
-- `order_event`
-- `policy_event`
-- `product_event`
-- `management_event`
-- `risk_event`
-
-### 输出信号字段
-
-- `trend_score`
-- `breakout_score`
-- `volume_score`
-- `event_score`
-- `risk_score`
-- `final_score`
-- `signal_level`
-
-### 输出等级
-
-- `observe`
-- `watch`
-- `strong_watch`
-- `avoid`
-
-### 示例使用方式
-
-```bash
-python -c "from pathlib import Path; from qianhe_quant.research import StockProfile, build_stock_research_signal, generate_stock_signal_report; profile = StockProfile(stock_code='000001', stock_name='Sample Grid Co', industry='Power Equipment', theme_tags=['grid equipment', 'order recovery'], facts=['The company disclosed order growth and capacity expansion updates.'], opinions=['The market currently groups this name into a grid-investment research basket.'], assumptions=['If orders convert into revenue and volume confirms, monitoring intensity can increase.'], risks=['Valuation remains sensitive to weak confirmation and short-term volatility.'], verification_tasks=['Verify whether the order language comes from a formal filing.']); signal = build_stock_research_signal(profile, 'qianhe_quant/data/sample_ohlcv.csv'); report = generate_stock_signal_report(profile, signal); Path('reports/sample_stock_signal_report.md').write_text(report, encoding='utf-8')"
-pytest
+```powershell
+python -m qianhe_quant.cli strategy-lab --out reports/strategy_tournament_report.md
 ```
 
-### 输出边界
+本地数据库入口：
 
-- 只生成“研究信号”
-- 不生成买入、卖出、持仓、仓位建议
-- 不生成收益承诺
-- 所有结论都区分事实、观点、推断、待核验
+- [V1.3 Quickstart](D:/Users/hp/Documents/New%20project/qianhe_quant_codex_tool_v1/docs/v1.3-quickstart.md)
+- [Local Database Guide](D:/Users/hp/Documents/New%20project/qianhe_quant_codex_tool_v1/docs/local-database-guide.md)
 
-## 预置案例：新亚电缆
+## V1.3 常用命令
 
-预置的“新亚电缆研究信号模块”现在是通用引擎上的一个案例封装：
+初始化数据库：
 
-- `qianhe_quant/research/xinya_cable_signal.py`
-- `reports/xinya_cable_signal_report.md`
+```powershell
+python -m qianhe_quant.cli db-init
+```
 
-## 推荐工作流
+导入本地 CSV：
+
+```powershell
+python -m qianhe_quant.cli db-import-ohlcv --csv qianhe_quant/data/sample_ohlcv.csv --symbol SAMPLE
+```
+
+查看数据库状态：
+
+```powershell
+python -m qianhe_quant.cli db-status
+```
+
+导出标准 OHLCV：
+
+```powershell
+python -m qianhe_quant.cli db-export-ohlcv --symbol SAMPLE --out qianhe_quant/data/sample_ohlcv_from_db.csv
+```
+
+直接从数据库跑研究回测：
+
+```powershell
+python -m qianhe_quant.cli db-backtest --symbol SAMPLE --strategy ma_cross
+```
+
+## 核心边界
+
+- 不做实盘交易
+- 不接券商 API
+- 不保存交易密码、API 私钥、Token
+- 不自动下单
+- 不输出买入、卖出、仓位、收益承诺
+
+所有输出只允许称为：
+
+- 研究信号
+- 模拟组合
+- 回测结果
+- 数据质量报告
+- 风险提示
+
+## 主要目录
 
 ```text
-任意股票纪要 -> 标的标签 -> 事实/观点/推断/待核验拆分 -> 事件因子 -> 趋势因子 -> 量能因子 -> 风险因子 -> 综合研究信号 -> Markdown 报告 -> 后续复盘留痕
+qianhe_quant/
+├── analysis/
+├── data/
+├── data_quality/
+├── database/
+├── ingestion/
+├── research/
+├── strategies/
+├── templates/
+└── ui/
 ```
 
-## 当前边界
+## 相关报告
 
-- 默认禁止实盘交易
-- 不接真实券商 API
-- 不保存交易密码、API 私钥或 Token
-- 所有真实交易都必须经过人工确认和合规复核
+- `reports/local_database_status_report.md`
+- `reports/strategy_tournament_report.md`
+- `reports/weekly_strategy_lab_report.md`
+- `reports/daily_quant_report.md`
